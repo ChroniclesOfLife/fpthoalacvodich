@@ -1,31 +1,39 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import com.qualcomm.robotcore.hardware.IMU;
-
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import java.util.List;
 
 @Autonomous(name = "auto")
 public class auto extends LinearOpMode {
+    static final double HD_COUNTS_PER_REV = 28;
+    static final double DRIVE_GEAR_REDUCTION = 20.15293;
+    static final double WHEEL_CIRCUMFERENCE_MM = 90 * Math.PI;
+    static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM;
+    static final double clicksPerDeg = 21.94;
     private static final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
     private static final String[] LABELS = {
             "Pixel",
     };
+    int lfPos, rfPos, lrPos, rrPos;
     private TfodProcessor tfod;
     private VisionPortal visionPortal;
     private DcMotor frontLeftMotor;
@@ -38,13 +46,8 @@ public class auto extends LinearOpMode {
     private Servo garbageCollector;
     private DistanceSensor distance;
     private IMU IMU;
-    int lfPos, rfPos, lrPos, rrPos;
-
-    static final double HD_COUNTS_PER_REV = 28;
-    static final double DRIVE_GEAR_REDUCTION = 20.15293;
-    static final double WHEEL_CIRCUMFERENCE_MM = 90 * Math.PI;
-    static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM;
-    static final double clicksPerDeg = 21.94;
+    private IMU.Parameters IMUParams;
+    private PID PID;
 
     private void moveForward(int howMuch, double speed) {
         // howMuch is in mm. A negative howMuch moves backward.
@@ -286,10 +289,10 @@ public class auto extends LinearOpMode {
 
         // Step through the list of recognitions and display info for each one.
         for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+            double x = (recognition.getLeft() + recognition.getRight()) / 2;
+            double y = (recognition.getTop() + recognition.getBottom()) / 2;
 
-            telemetry.addData(""," ");
+            telemetry.addData("", " ");
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
@@ -311,9 +314,22 @@ public class auto extends LinearOpMode {
         garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
         distance = hardwareMap.get(DistanceSensor.class, "Distance");
         IMU = hardwareMap.get(IMU.class, "IMU");
+        IMUParams = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,    //remember to change
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                )
+        );
+        IMU.initialize(IMUParams);
+        Orientation IMUVals = IMU.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+        //example PID usage
+        //PID.PIDController(10, 10, 10, IMUVals.firstAngle, frontLeftMotor::setPower);
         // Put initialization blocks here.
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
         waitForStart();
 
 
