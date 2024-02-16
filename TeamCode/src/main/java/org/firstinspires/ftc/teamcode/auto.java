@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -35,6 +37,7 @@ public class auto extends LinearOpMode {
     private DcMotor dualArm;
     private Servo garbageCollector;
     private DistanceSensor distance;
+    private IMU IMU;
     int lfPos, rfPos, lrPos, rrPos;
 
     static final double HD_COUNTS_PER_REV = 28;
@@ -87,6 +90,7 @@ public class auto extends LinearOpMode {
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
     }
+
     private void moveRight(int howMuch, double speed) {
         // howMuch is in mm. A negative howMuch moves backward.
 
@@ -178,9 +182,6 @@ public class auto extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
-    /**
-     * Describe this function...
-     */
     private void roll() {
         rollIn.setPower(0);
         if (gamepad1.left_bumper) {
@@ -193,9 +194,6 @@ public class auto extends LinearOpMode {
         }
     }
 
-    /**
-     * Describe this function...
-     */
     private void armUp_Down() {
         dualArm.setPower(0);
         if (gamepad1.a) {
@@ -207,6 +205,7 @@ public class auto extends LinearOpMode {
             dualArm.setPower(0.3);
         }
     }
+
     private void collectGarbage() {
         if (gamepad1.left_trigger > 0) {
             garbageCollector.setPosition(0);
@@ -220,7 +219,7 @@ public class auto extends LinearOpMode {
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
-
+                .setModelFileName(TFOD_MODEL_FILE)
                 // With the following lines commented out, the default TfodProcessor Builder
                 // will load the default model for the season. To define a custom model to load,
                 // choose one of the following:
@@ -270,7 +269,7 @@ public class auto extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.8f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -298,9 +297,7 @@ public class auto extends LinearOpMode {
 
     }   // end method telemetryTfod()
 
-    /**
-     * This function is executed when this Op Mode is selected from the Driver Station.
-     */
+
     @Override
     public void runOpMode() {
         initTfod();
@@ -313,14 +310,15 @@ public class auto extends LinearOpMode {
         dualArm = hardwareMap.get(DcMotor.class, "dualArm");
         garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
         distance = hardwareMap.get(DistanceSensor.class, "Distance");
-
+        IMU = hardwareMap.get(IMU.class, "IMU");
         // Put initialization blocks here.
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
+
+
         if (opModeIsActive()) {
             // Put run blocks here.
-
             visionPortal.close();
         }
     }
