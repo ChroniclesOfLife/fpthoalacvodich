@@ -321,21 +321,24 @@ public class auto extends LinearOpMode {
                 )
         );
         IMU.initialize(IMUParams);
-        Orientation IMUVals = IMU.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
         //example PID usage
         //PID.PIDController(10, 10, 10, IMUVals.firstAngle, frontLeftMotor::setPower);
+        //PID.SetTarget(10F);
         // Put initialization blocks here.
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-
         waitForStart();
 
-
         if (opModeIsActive()) {
-            // Put run blocks here.
-            visionPortal.close();
+            // Put run blocks here
+            List<Recognition> tfodRecs = tfod.getRecognitions();
+            for (Recognition recs : tfodRecs
+            ) {
+                recs.get
+            }
+            Orientation IMUVals = IMU.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+
         }
     }
 }
