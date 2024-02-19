@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "mainOpModeMecanum", group = "official")
 public class mainOpModeMecanum extends LinearOpMode {
 
+    int flag2;
+    int flag1;
+    int prevValue;
     private DcMotor frontLeftMotor;
     private DcMotor backLeftMotor;
     private DcMotor frontRightMotor;
@@ -17,10 +20,6 @@ public class mainOpModeMecanum extends LinearOpMode {
     private DcMotor rollIn;
     private DcMotor dualArm;
     private Servo garbageCollector;
-
-    int flag2;
-    int flag1;
-    int prevValue;
 
     /**
      * Describe this function...
@@ -38,7 +37,7 @@ public class mainOpModeMecanum extends LinearOpMode {
         double backLeftPower = (y - x + rx) / denominator;
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
-        
+
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
         frontRightMotor.setPower(frontRightPower);
@@ -54,10 +53,10 @@ public class mainOpModeMecanum extends LinearOpMode {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-        plane = hardwareMap.get(Servo.class, "plane");
-        rollIn = hardwareMap.get(DcMotor.class, "rollIn");
-        dualArm = hardwareMap.get(DcMotor.class, "dualArm");
-        garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
+        //plane = hardwareMap.get(Servo.class, "plane");
+        //rollIn = hardwareMap.get(DcMotor.class, "rollIn");
+        //dualArm = hardwareMap.get(DcMotor.class, "dualArm");
+        //garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
 
         // Put initialization blocks here.
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -69,15 +68,15 @@ public class mainOpModeMecanum extends LinearOpMode {
             prevValue = 0;
             while (opModeIsActive()) {
                 run();
-                roll();
-                armUp_Down();
-                collectGarbage();
-                checkAlternation();
-                if (flag1 / 2 >= 5) {
-                    releasePlane();
-                } else {
-                    plane.setPosition(0);
-                }
+                //roll();
+                //armUp_Down();
+                //collectGarbage();
+                //checkAlternation();
+//                if (flag1 / 2 >= 5) {
+//                    releasePlane();
+//                } else {
+//                    plane.setPosition(0);
+//                }
                 telemetry.addData("flag1", flag1);
                 telemetry.addData("flag2", flag2);
                 telemetry.update();
