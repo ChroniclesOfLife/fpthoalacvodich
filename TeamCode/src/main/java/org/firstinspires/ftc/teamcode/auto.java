@@ -46,6 +46,7 @@ public class auto extends LinearOpMode {
     private Servo garbageCollector;
     private DistanceSensor distanceL;
     private DistanceSensor distanceR;
+    private DistanceSensor distanceB;
 
     private void moveVertical(int howMuch, double speed) {
         // howMuch is in mm. A negative howMuch moves backward.
@@ -132,6 +133,7 @@ public class auto extends LinearOpMode {
 
     }
 
+
     private void stopAllMotors() {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
@@ -181,13 +183,18 @@ public class auto extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
-    private void moveHorizontalContinous(double speed) {
+    private void moveHorizontalContinuous(double speed) {
         frontLeftMotor.setPower(speed);
         frontRightMotor.setPower(-speed);
         backLeftMotor.setPower(-speed);
-        backRightMotor.setPower(+speed);
+        backRightMotor.setPower(speed);
     }
-
+    private void moveVerticalContinuous(double speed) {
+        frontLeftMotor.setPower(speed);
+        frontRightMotor.setPower(speed);
+        backLeftMotor.setPower(speed);
+        backRightMotor.setPower(speed);
+    }
     /**
      * Describe this function...
      */
@@ -272,10 +279,11 @@ public class auto extends LinearOpMode {
 //        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
 //        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         rollIn = hardwareMap.get(DcMotor.class, "rollIn");
-//        dualArm = hardwareMap.get(DcMotor.class, "dualArm");
+        dualArm = hardwareMap.get(DcMotor.class, "dualArm");
 //        garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
         distanceL = hardwareMap.get(DistanceSensor.class, "DistanceL");
         distanceR = hardwareMap.get(DistanceSensor.class, "DistanceR");
+        distanceB = hardwareMap.get(DistanceSensor.class, "DistanceB");
         visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, false);
 //        // Put initialization blocks here.
@@ -289,7 +297,7 @@ public class auto extends LinearOpMode {
             boolean isLeft = true;
             double distanceToObject = 0;
             while (!adu && timer.time(TimeUnit.SECONDS) - starttime >= 5) {
-                moveHorizontalContinous(0.15);
+                moveHorizontalContinuous(0.15);
                 adu = distanceL.getDistance(DistanceUnit.CM) < 70 | distanceR.getDistance(DistanceUnit.CM) < 70;
                 isLeft = distanceL.getDistance(DistanceUnit.CM) < distanceR.getDistance(DistanceUnit.CM);
                 distanceToObject = isLeft ? distanceL.getDistance(DistanceUnit.CM) : distanceR.getDistance(DistanceUnit.CM);
@@ -314,8 +322,12 @@ public class auto extends LinearOpMode {
 
             rollIn.setPower(0);
 
+            moveVertical((int) -(distanceToObject*10.0 + 50.0), 1);
+            turn(90, 0.5);
 
-
+            while (distanceB.getDistance(DistanceUnit.CM) >= 90){
+                moveVerticalContinuous(0.15);
+            }
         }
     }
 }
