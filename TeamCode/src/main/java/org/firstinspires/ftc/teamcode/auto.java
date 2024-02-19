@@ -189,12 +189,14 @@ public class auto extends LinearOpMode {
         backLeftMotor.setPower(-speed);
         backRightMotor.setPower(speed);
     }
+
     private void moveVerticalContinuous(double speed) {
         frontLeftMotor.setPower(speed);
         frontRightMotor.setPower(speed);
         backLeftMotor.setPower(speed);
         backRightMotor.setPower(speed);
     }
+
     /**
      * Describe this function...
      */
@@ -304,30 +306,44 @@ public class auto extends LinearOpMode {
                 distanceToObject = Math.round(distanceToObject);
             }
             stopAllMotors();
-            if (isLeft) {
-                moveHorizontal(-150, 0.4);
-            }
-            else {
-                moveHorizontal(150, 0.4);
-            }
 
-            moveVertical((int) (distanceToObject*10.0 + 50.0), 0.5);
+            if (!adu) {
+                turn(-60, 0.3);
+                moveVertical(25, 0.4);
+                rollIn.setPower(0.1);
+                try {
+                    wait(1);
+                } catch (InterruptedException e) {
+                    rollIn.setPower(0);
+                }
+                rollIn.setPower(0);
 
-            rollIn.setPower(0.1);
-            try {
-                wait(1);
+            } else {
+                if (isLeft) {
+                    moveHorizontal(-150, 0.4);
+                } else {
+                    moveHorizontal(150, 0.4);
+                }
+
+                moveVertical((int) (distanceToObject * 10.0 + 50.0), 0.5);
+
+                rollIn.setPower(0.1);
+                try {
+                    wait(1);
+                } catch (InterruptedException e) {
+                    rollIn.setPower(0);
+                }
+                rollIn.setPower(0);
             }
-            catch (InterruptedException ignored){
-            }
-
-            rollIn.setPower(0);
-
-            moveVertical((int) -(distanceToObject*10.0 + 50.0), 1);
+            moveVertical((int) -(distanceToObject * 10.0 + 50.0), 0.6);
             turn(90, 0.5);
 
-            while (distanceB.getDistance(DistanceUnit.CM) >= 90){
+            while (distanceB.getDistance(DistanceUnit.CM) >= 90) {
                 moveVerticalContinuous(0.15);
             }
+            stopAllMotors();
+
+
         }
     }
 }
