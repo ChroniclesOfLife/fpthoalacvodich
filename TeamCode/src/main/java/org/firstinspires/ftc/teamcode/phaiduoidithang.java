@@ -20,8 +20,8 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "auto")
-public class phaiduoi extends LinearOpMode {
+@Autonomous(name = "PhaiDuoiDiThang")
+public class phaiduoidithang extends LinearOpMode {
     static final double HD_COUNTS_PER_REV = 28;
     static final double DRIVE_GEAR_REDUCTION = 20.15293;
     static final double WHEEL_CIRCUMFERENCE_MM = 90 * Math.PI;
@@ -92,7 +92,7 @@ public class phaiduoi extends LinearOpMode {
 
     private void moveHorizontal(int howMuch, double speed) {
         // howMuch is in mm. A negative howMuch moves backward.
-
+        howMuch = -howMuch;
         // fetch motor positions
         lfPos = frontLeftMotor.getCurrentPosition();
         rfPos = frontRightMotor.getCurrentPosition();
@@ -317,7 +317,7 @@ public class phaiduoi extends LinearOpMode {
                     rollIn.setPower(0);
                 }
                 rollIn.setPower(0);
-            // begin capturing
+                // begin capturing
             } else {
                 if (isLeft) {
                     moveHorizontal(-150, 0.4);
