@@ -28,7 +28,7 @@ public class phaiduoidiphai extends LinearOpMode {
     static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM;
     static final double clicksPerDeg = 21.94;
     private static final boolean USE_WEBCAM = true;
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
+    private static final String TFOD_MODEL_FILE = "Enviroment.getExternalStorage()/FIRST/tflitemodels/myCustomModel.tflite";
     private static final String[] LABELS = {"Pixel",};
     int lfPos, rfPos, lrPos, rrPos;
     List<AprilTagDetection> currAprilTags;

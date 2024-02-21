@@ -275,7 +275,7 @@ public class auto extends LinearOpMode {
     @Override
     public void runOpMode() {
         InitVision();
-
+        double t;
 //        frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
 //        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
 //        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
@@ -293,6 +293,45 @@ public class auto extends LinearOpMode {
 //        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
         if (opModeIsActive()) {
+            t = getRuntime();
+            if (distanceL.getDistance(DistanceUnit.CM) <= 70) {
+                moveHorizontal(207,0.6);
+                moveVertical();
+
+            }
+            else while ((getRuntime() - t) < 2) {
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
             ElapsedTime timer = new ElapsedTime();
             double starttime = timer.time(TimeUnit.SECONDS);
             boolean adu = false;
@@ -342,7 +381,7 @@ public class auto extends LinearOpMode {
                 moveVerticalContinuous(0.15);
             }
             stopAllMotors();
-
+            CODE CU */
 
         }
     }

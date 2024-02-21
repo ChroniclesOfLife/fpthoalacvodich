@@ -26,7 +26,7 @@ public class mainOpModeMecanum extends LinearOpMode {
      */
     private void run() {
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+        double x = gamepad1.left_stick_x * 1.05; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x;
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -57,7 +57,7 @@ public class mainOpModeMecanum extends LinearOpMode {
         //rollIn = hardwareMap.get(DcMotor.class, "rollIn");
         //dualArm = hardwareMap.get(DcMotor.class, "dualArm");
         //garbageCollector = hardwareMap.get(Servo.class, "garbageCollector");
-
+        
         // Put initialization blocks here.
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
